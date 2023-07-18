@@ -1,0 +1,59 @@
+name: "Helm Action"
+description: "Custom action to manage Helm commands"
+inputs:
+  command:
+    description: "The Helm command to run"
+    required: true
+  timeout-in-mins:
+    description: "Timeout for Helm atomic command"
+    required: false
+    default: "3"
+  repository-name:
+    description: "The name of the repository"
+    required: true
+  helm-dir:
+    description: "The name of the Helm directory where charts are"
+    required: true
+  values-file:
+    description: "The values file for the given Helm release"
+    required: false    
+  environment:
+    description: "Environment for the Helm release"
+    required: false    
+  release-name:
+    description: "Helm release name"
+    required: false    
+  namespace:
+    description: "Namespace for the Helm release"
+    required: false  
+  image-tag:
+    description: "Docker image tag for the Helm release"
+    required: false
+  create-namespace:
+    description: "Whether to create the namespace if not exists"
+    required: false
+    default: "false"
+  set-flag:
+    description: "Comma-separated list of key-value pairs for the Helm --set flag"
+    required: false
+    default: ""
+  set-string-flag:
+    description: "Comma-separated list of key-value pairs for the Helm --set-string flag"
+    required: false
+    default: ""
+  dry-run:
+    description: "Whether to run the command in dry-run mode"
+    required: false
+    default: "false"
+  is-debug:
+    description: "Whether to run the command in debug mode"
+    required: false
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        chmod +x ${{ github.action_path }}/main.sh
+        ${{ github.action_path }}/main.sh "${{ inputs.command }}" "${{ inputs.timeout-in-mins }}" "${{ inputs.repository-name }}" "${{ inputs.helm-dir }}" "${{ inputs.values-file }}" "${{ inputs.environment }}" "${{ inputs.release-name }}" "${{ inputs.namespace }}" "${{ inputs.image-tag }}" "${{ inputs.dry-run }}" "${{ inputs.is-debug }}" "${{ inputs.create-namespace }}" "${{ inputs.set-flag }}" "${{ inputs.set-string-flag }}"
+      shell: bash

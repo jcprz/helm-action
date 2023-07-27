@@ -81,6 +81,9 @@ case "${COMMAND}" in
       \"${CHART_DIRECTORY}\" \
       ${DRY_RUN_OPTION} ${IS_DEBUG} ${CREATE_NAMESPACE_OPTION}"
     ;;
+    "delete")
+      FINAL_COMMAND="helm uninstall \"${RELEASE_NAME}\" --namespace \"${NAMESPACE}\""
+    ;;
   *)
     echo "Invalid command: ${COMMAND}"
     exit 1

@@ -42,7 +42,10 @@ case "${COMMAND}" in
     helm dependency update "${CHART_DIRECTORY}" ${DRY_RUN_OPTION} ${IS_DEBUG} || exit 1
     ;;
   "lint")
-    helm lint --values "${CHART_DIRECTORY}/${VALUES_FILE}" ${CHART_DIRECTORY} ${DRY_RUN_OPTION} ${IS_DEBUG} || exit 1
+    helm lint --values "${CHART_DIRECTORY}/${VALUES_FILE}" ${CHART_DIRECTORY} \
+      ${SET_STRING_FLAG_VALUES} \
+      ${SET_FLAG_VALUES} \
+      ${DRY_RUN_OPTION} ${IS_DEBUG} || exit 1
     ;;
   "install")
     helm install --timeout "${TIMEOUT_IN_MINS}m" \

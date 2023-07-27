@@ -50,6 +50,7 @@ case "${COMMAND}" in
   "lint")
     FINAL_COMMAND="helm lint --values \"${CHART_DIRECTORY}/${VALUES_FILE}\" ${CHART_DIRECTORY} \
       --set-string repositoryName=${REPOSITORY_NAME} \
+      --set-string env.ENV=\"${ENV}\" \
       ${SET_STRING_FLAG_VALUES} \
       ${SET_FLAG_VALUES} \
       ${DRY_RUN_OPTION} ${IS_DEBUG}"

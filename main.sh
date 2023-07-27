@@ -1,4 +1,10 @@
 #!/bin/bash
+
+set -e
+set -u
+set -o pipefail
+
+
 COMMAND=$1
 TIMEOUT_IN_MINS=$2
 REPOSITORY_NAME=$3
@@ -39,43 +45,49 @@ fi
 
 case "${COMMAND}" in
   "dependency_update")
-    helm dependency update "${CHART_DIRECTORY}" ${DRY_RUN_OPTION} ${IS_DEBUG} || exit 1
+    FINAL_COMMAND="helm dependency update \"${CHART_DIRECTORY}\" ${DRY_RUN_OPTION} ${IS_DEBUG}"
     ;;
   "lint")
-    helm lint --values "${CHART_DIRECTORY}/${VALUES_FILE}" ${CHART_DIRECTORY} \
+    FINAL_COMMAND="helm lint --values \"${CHART_DIRECTORY}/${VALUES_FILE}\" ${CHART_DIRECTORY} \
       --set-string repositoryName=${REPOSITORY_NAME} \
       ${SET_STRING_FLAG_VALUES} \
       ${SET_FLAG_VALUES} \
-      ${DRY_RUN_OPTION} ${IS_DEBUG} || exit 1
+      ${DRY_RUN_OPTION} ${IS_DEBUG}"
     ;;
   "install")
-    helm install --timeout "${TIMEOUT_IN_MINS}m" \
-      --values "${CHART_DIRECTORY}/${VALUES_FILE}" \
+    FINAL_COMMAND="helm install --timeout \"${TIMEOUT_IN_MINS}m\" \
+      --values \"${CHART_DIRECTORY}/${VALUES_FILE}\" \
       --set-string repositoryName=${REPOSITORY_NAME} \
       ${SET_STRING_FLAG_VALUES} \
       ${SET_FLAG_VALUES} \
-      --set-string image.tag="${IMAGE_TAG}" \
-      --set-string env.ENV="${ENV}" \
-      "${RELEASE_NAME}" \
-      --namespace="${NAMESPACE}" \
-      "${CHART_DIRECTORY}" \
-      ${DRY_RUN_OPTION} ${IS_DEBUG} ${CREATE_NAMESPACE_OPTION} || exit 1
+      --set-string image.tag=\"${IMAGE_TAG}\" \
+      --set-string env.ENV=\"${ENV}\" \
+      \"${RELEASE_NAME}\" \
+      --namespace=\"${NAMESPACE}\" \
+      \"${CHART_DIRECTORY}\" \
+      ${DRY_RUN_OPTION} ${IS_DEBUG} ${CREATE_NAMESPACE_OPTION}"
     ;;
   "upgrade")
-    helm upgrade --install --atomic --timeout "${TIMEOUT_IN_MINS}m" \
-      --values "${CHART_DIRECTORY}/${VALUES_FILE}" \
+    FINAL_COMMAND="helm upgrade --install --atomic --timeout \"${TIMEOUT_IN_MINS}m\" \
+      --values \"${CHART_DIRECTORY}/${VALUES_FILE}\" \
       --set-string repositoryName=${REPOSITORY_NAME} \
       ${SET_STRING_FLAG_VALUES} \
       ${SET_FLAG_VALUES} \
-      --set-string image.tag="${IMAGE_TAG}" \
-      --set-string env.ENV="${ENV}" \
-      "${RELEASE_NAME}" \
-      --namespace="${NAMESPACE}" \
-      "${CHART_DIRECTORY}" \
-      ${DRY_RUN_OPTION} ${IS_DEBUG} ${CREATE_NAMESPACE_OPTION} || exit 1
+      --set-string image.tag=\"${IMAGE_TAG}\" \
+      --set-string env.ENV=\"${ENV}\" \
+      \"${RELEASE_NAME}\" \
+      --namespace=\"${NAMESPACE}\" \
+      \"${CHART_DIRECTORY}\" \
+      ${DRY_RUN_OPTION} ${IS_DEBUG} ${CREATE_NAMESPACE_OPTION}"
     ;;
   *)
     echo "Invalid command: ${COMMAND}"
     exit 1
     ;;
 esac
+
+echo "$(date) - Executing: ${FINAL_COMMAND}"
+if ! eval "${FINAL_COMMAND}"; then
+  echo "Error: Command failed: ${FINAL_COMMAND}"
+  exit 1
+fi

@@ -43,6 +43,7 @@ case "${COMMAND}" in
     ;;
   "lint")
     helm lint --values "${CHART_DIRECTORY}/${VALUES_FILE}" ${CHART_DIRECTORY} \
+      --set-string repositoryName=${REPOSITORY_NAME} \
       ${SET_STRING_FLAG_VALUES} \
       ${SET_FLAG_VALUES} \
       ${DRY_RUN_OPTION} ${IS_DEBUG} || exit 1
@@ -50,6 +51,7 @@ case "${COMMAND}" in
   "install")
     helm install --timeout "${TIMEOUT_IN_MINS}m" \
       --values "${CHART_DIRECTORY}/${VALUES_FILE}" \
+      --set-string repositoryName=${REPOSITORY_NAME} \
       ${SET_STRING_FLAG_VALUES} \
       ${SET_FLAG_VALUES} \
       --set-string image.tag="${IMAGE_TAG}" \
@@ -62,6 +64,7 @@ case "${COMMAND}" in
   "upgrade")
     helm upgrade --install --atomic --timeout "${TIMEOUT_IN_MINS}m" \
       --values "${CHART_DIRECTORY}/${VALUES_FILE}" \
+      --set-string repositoryName=${REPOSITORY_NAME} \
       ${SET_STRING_FLAG_VALUES} \
       ${SET_FLAG_VALUES} \
       --set-string image.tag="${IMAGE_TAG}" \

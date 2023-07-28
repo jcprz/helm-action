@@ -19,12 +19,14 @@ IS_DEBUG=${11}
 CREATE_NAMESPACE_OPTION=${12}
 SET_FLAG=${13}
 SET_STRING_FLAG=${14}
+IS_FORCED=${15}
 
 CHART_DIRECTORY="${HELM_DIR}/${REPOSITORY_NAME}"
 
 DRY_RUN_OPTION=$([ "${DRY_RUN_OPTION}" == "true" ] && echo "--dry-run" || echo "")
 IS_DEBUG=$([ "${IS_DEBUG}" == "true" ] && echo "--debug" || echo "")
 CREATE_NAMESPACE_OPTION=$([ "${CREATE_NAMESPACE_OPTION}" == "true" ] && echo "--create-namespace" || echo "")
+IS_FORCED=$([ "${IS_FORCED}" == "true" ] && echo "--force" || echo "")
 
 # Prepare --set and --set-string flags
 SET_FLAG_VALUES=""
@@ -79,10 +81,20 @@ case "${COMMAND}" in
       \"${RELEASE_NAME}\" \
       --namespace=\"${NAMESPACE}\" \
       \"${CHART_DIRECTORY}\" \
-      ${DRY_RUN_OPTION} ${IS_DEBUG} ${CREATE_NAMESPACE_OPTION}"
+      ${DRY_RUN_OPTION} ${IS_DEBUG} ${CREATE_NAMESPACE_OPTION} ${IS_FORCED}"
     ;;
-    "delete")
-      FINAL_COMMAND="helm uninstall \"${RELEASE_NAME}\" --namespace \"${NAMESPACE}\""
+  "delete")
+    FINAL_COMMAND="helm uninstall \"${RELEASE_NAME}\" --namespace \"${NAMESPACE}\""
+    ;;
+  "template")
+    FINAL_COMMAND="helm template --values \"${CHART_DIRECTORY}/${VALUES_FILE}\" \
+      --set-string repositoryName=${REPOSITORY_NAME} \
+      ${SET_STRING_FLAG_VALUES} \
+      ${SET_FLAG_VALUES} \
+      --set-string image.tag=\"${IMAGE_TAG}\" \
+      --set-string env.ENV=\"${ENV}\" \
+      \"${RELEASE_NAME}\" \
+      \"${CHART_DIRECTORY}\""
     ;;
   *)
     echo "Invalid command: ${COMMAND}"

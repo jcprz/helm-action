@@ -49,11 +49,15 @@ inputs:
     description: "Whether to run the command in debug mode"
     required: false
     default: "false"
+  enable-force-flag:
+    description: "Whether to run the command with --force flag"
+    required: false
+    default: "false"  
 
 runs:
   using: "composite"
   steps:
     - run: |
         chmod +x ${{ github.action_path }}/main.sh
-        ${{ github.action_path }}/main.sh "${{ inputs.command }}" "${{ inputs.timeout-in-mins }}" "${{ inputs.repository-name }}" "${{ inputs.helm-dir }}" "${{ inputs.values-file }}" "${{ inputs.environment }}" "${{ inputs.release-name }}" "${{ inputs.namespace }}" "${{ inputs.image-tag }}" "${{ inputs.dry-run }}" "${{ inputs.is-debug }}" "${{ inputs.create-namespace }}" "${{ inputs.set-flag }}" "${{ inputs.set-string-flag }}"
+        ${{ github.action_path }}/main.sh "${{ inputs.command }}" "${{ inputs.timeout-in-mins }}" "${{ inputs.repository-name }}" "${{ inputs.helm-dir }}" "${{ inputs.values-file }}" "${{ inputs.environment }}" "${{ inputs.release-name }}" "${{ inputs.namespace }}" "${{ inputs.image-tag }}" "${{ inputs.dry-run }}" "${{ inputs.is-debug }}" "${{ inputs.create-namespace }}" "${{ inputs.set-flag }}" "${{ inputs.set-string-flag }}" "${{ inputs.enable-force-flag }}"
       shell: bash

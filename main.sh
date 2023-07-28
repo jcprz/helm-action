@@ -51,7 +51,6 @@ case "${COMMAND}" in
     ;;
   "lint")
     FINAL_COMMAND="helm lint --values \"${CHART_DIRECTORY}/${VALUES_FILE}\" ${CHART_DIRECTORY} \
-      --set-string repositoryName=${REPOSITORY_NAME} \
       --set-string env.ENV=\"${ENV}\" \
       ${SET_STRING_FLAG_VALUES} \
       ${SET_FLAG_VALUES} \
@@ -60,7 +59,6 @@ case "${COMMAND}" in
   "install")
     FINAL_COMMAND="helm install --timeout \"${TIMEOUT_IN_MINS}m\" \
       --values \"${CHART_DIRECTORY}/${VALUES_FILE}\" \
-      --set-string repositoryName=${REPOSITORY_NAME} \
       ${SET_STRING_FLAG_VALUES} \
       ${SET_FLAG_VALUES} \
       --set-string image.tag=\"${IMAGE_TAG}\" \
@@ -73,7 +71,6 @@ case "${COMMAND}" in
   "upgrade")
     FINAL_COMMAND="helm upgrade --install --atomic --timeout \"${TIMEOUT_IN_MINS}m\" \
       --values \"${CHART_DIRECTORY}/${VALUES_FILE}\" \
-      --set-string repositoryName=${REPOSITORY_NAME} \
       ${SET_STRING_FLAG_VALUES} \
       ${SET_FLAG_VALUES} \
       --set-string image.tag=\"${IMAGE_TAG}\" \
@@ -88,7 +85,6 @@ case "${COMMAND}" in
     ;;
   "template")
     FINAL_COMMAND="helm template --values \"${CHART_DIRECTORY}/${VALUES_FILE}\" \
-      --set-string repositoryName=${REPOSITORY_NAME} \
       ${SET_STRING_FLAG_VALUES} \
       ${SET_FLAG_VALUES} \
       --set-string image.tag=\"${IMAGE_TAG}\" \

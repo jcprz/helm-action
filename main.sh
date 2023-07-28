@@ -81,7 +81,13 @@ case "${COMMAND}" in
       ${DRY_RUN_OPTION} ${IS_DEBUG} ${CREATE_NAMESPACE_OPTION} ${IS_FORCED}"
     ;;
   "delete")
-    FINAL_COMMAND="helm uninstall \"${RELEASE_NAME}\" --namespace \"${NAMESPACE}\""
+    if helm list -n "${NAMESPACE}" | grep -q "${RELEASE_NAME}"
+    then
+      FINAL_COMMAND="helm uninstall \"${RELEASE_NAME}\" --namespace \"${NAMESPACE}\""
+    else
+      echo "Release \"${RELEASE_NAME}\" does not exist in namespace \"${NAMESPACE}\", no need to delete."
+      FINAL_COMMAND="echo 'Skipping helm uninstall command.'"
+    fi
     ;;
   "template")
     FINAL_COMMAND="helm template --values \"${CHART_DIRECTORY}/${VALUES_FILE}\" \
